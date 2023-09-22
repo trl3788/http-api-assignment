@@ -5,7 +5,65 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
+    const handleResponse = async (response, type) => {
+      const content = document.getElementById('content');
+      content.innerHTML = '';
+      const h1 = document.createElement('h1');
+      const p = document.createElement('p');
 
+      const parsedResponse = await response.text();
+      switch(response.status) {
+        case 200:
+          h1.textContent = 'Success';
+          break;
+        case 400:
+          h1.textContent = 'Bad Request';
+          break;
+        case 401:
+          h1.textContent = 'Unauthorized';
+          break;
+        case 403:
+          h1.textContent = 'Forbidden';
+          break;
+        case 500:
+          h1.textContent = 'Internal Error';
+          break;
+        case 501:
+          h1.textContent = 'Not Implemented';
+          break;
+        default: 
+          h1.textContent = "Not Found";
+          break;
+      }
+      p.textContent = parsedResponse;
+
+      content.appendChild(h1);
+      content.appendChild(p);
+    } 
+
+    const sendFetch = async() => {
+      const url = document.getElementById('page').value;
+      const type = document.getElementById('type').value;
+      const response = await fetch(url, {
+        headers:{
+          'accept': `${type}`,
+        }
+      })
+
+      handleResponse(response, type);
+    }
+    
+    const init = () => {
+      const requestButton = document.getElementById('send');
+
+      requestButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        sendFetch();
+      })
+    }
+
+
+    window.onload = init;
   </script>
 </head>
 <body>
